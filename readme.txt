@@ -1,5 +1,5 @@
 ﻿=== Paga Woocommerce Payment Gateway ===
-Contributors: tubiz mypaga.com k_uko
+Contributors: tubiz, mypaga.com, k_uko
 Tags: woocommerce, payment gateway, payment gateways, paga, interswitch, verve cards, tubiz plugins, verve, nigeria
 Requires at least: 3.5
 Tested up to: 4.0
