@@ -1,10 +1,9 @@
 ﻿=== Paga Woocommerce Payment Gateway ===
-Contributors: tubiz
-Donate link: http://bosun.me/donate
+Contributors: tubiz mypaga.com k_uko
 Tags: woocommerce, payment gateway, payment gateways, paga, interswitch, verve cards, tubiz plugins, verve, nigeria
 Requires at least: 3.5
-Tested up to: 3.9
-Stable tag: 1.0.0
+Tested up to: 4.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,8 +15,6 @@ Paga Woocommerce Payment Gateway allows you to accept payment on your Woocommerc
 == Description ==
 
 This is a Paga payment gateway for Woocommerce.
-
-Paga is a Nigerian Payment Gateway
 
 Paga is a unique online payment processor whose vision is to offer buyers and sellers a secure and easy-to-use means of transacting business online.
 
@@ -107,6 +104,10 @@ __*You can select the radio button next to the Paga Payment Gateway from the lis
 
 == Changelog ==
 
+= 1.1.0 =
+* 	Add support for Woocommerce 2.1
+*	Plugin now uses E-Pay v2
+
 = 1.0.0 =
 *   First release
 
@@ -116,7 +117,8 @@ __*You can select the radio button next to the Paga Payment Gateway from the lis
 
 == Upgrade Notice ==
 
-There is no need to upgrade just yet.
+= 1.1.0 =
+* 	Important update, kindly update to this version
 
 
 
@@ -125,11 +127,11 @@ There is no need to upgrade just yet.
 
 == Screenshots ==
 
-1. WooCommerce payment gateway setting page
+1. Paga Wooocommerce Payment Gateway Setting Page
 
-2. Paga Wooocommerce Payment Gateway Setting Page
+2. Paga Wooocommerce Payment Gateway method on the checkout page
 
-3. Paga Wooocommerce Payment Gateway method on the checkout page
+3. Paga available payment method page
 
 4. Successful Payment Transaction Message
 

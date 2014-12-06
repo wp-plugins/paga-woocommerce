@@ -1,9 +1,9 @@
 <?php
 /*
-	Plugin Name: Paga E-Pay
+	Plugin Name: Paga Woocommerce E-Pay
 	Plugin URI: https://www.mypaga.com/
-	Description: Paga E-Pay Plugin
-	Version: 1.0.0
+	Description: Paga E-Pay Plugin for Woocommerce
+	Version: 1.1.0
 	Author: Pagatech Limited
 	Author URI: https://www.mypaga.com/
 	License:  GPL-2.0+
@@ -27,11 +27,11 @@ function woocommerce_paga_init() {
 		public function __construct(){
 			global $woocommerce;
 
-			$this->id 				= 'tbz_paga_gateway';
-    			$this->icon 				= apply_filters('woocommerce_paga_icon', plugins_url( 'assets/pay-via-paga.png' , __FILE__ ) );
+			$this->id 					= 'tbz_paga_gateway';
+    		$this->icon 				= apply_filters('woocommerce_paga_icon', plugins_url( 'assets/pay-with-paga.png' , __FILE__ ) );
 			$this->has_fields 			= false;
-        		$this->method_title     		= 'pay with paga';
-        		$this->method_description  		= 'your cash, anytime, anywhere';
+        	$this->method_title     	= 'pay with paga';
+        	$this->method_description  	= 'your cash, anytime, anywhere';
 
 			// Load the form fields.
 			$this->init_form_fields();
@@ -42,7 +42,7 @@ function woocommerce_paga_init() {
 			// Define user set variables
 			$this->title 					= $this->get_option( 'title' );
 			$this->description 				= $this->get_option( 'description' );
-			$this->paga_epay_code	 			= $this->get_option( 'paga_epay_code' );
+			$this->paga_epay_code	 		= $this->get_option( 'paga_epay_code' );
 			$this->testmode					= $this->get_option( 'testmode' );
 
 			//Actions
@@ -72,55 +72,54 @@ function woocommerce_paga_init() {
 		function init_form_fields(){
 
 			$this->form_fields = array(
-			'enabled' => array(
-							'title' 			=> 	'Enable/Disable',
-							'type' 				=> 	'checkbox',
-							'label' 			=>	'Enable Paga Payment Gateway',
-							'description' 			=> 	'Enable or disable the gateway.',
-                    					'desc_tip'      		=> 	true,
-							'default' 			=> 	'yes'
-						),
+				'enabled' => array(
+					'title' 			=> 	'Enable/Disable',
+					'type' 				=> 	'checkbox',
+					'label' 			=>	'Enable Paga Payment Gateway',
+					'description' 		=> 	'Enable or disable the gateway.',
+            		'desc_tip'      	=> 	true,
+					'default' 			=> 	'yes'
+				),
 				 'title' => array(
-								'title' 		=> 	'Title',
-								'type' 			=> 	'text',
-								'description' 		=> 	'This controls the title which the user sees during checkout.',
-                    						'desc_tip'      	=> 	false,
-								'default' 		=>  'pay with paga'
-							),
+					'title' 			=> 	'Title',
+						'type' 			=> 	'text',
+						'description' 	=> 	'This controls the title which the user sees during checkout.',
+            			'desc_tip'      => 	false,
+						'default' 		=>  'pay with paga'
+					),
 				'description' => array(
-								'title' 		=> 	'Description',
-								'type' 			=> 	'textarea',
-								'description' 		=> 	'This controls the description which the user sees during checkout.',
-								'default' 		=> 	'your cash, anytime, anywhere'
-							),
-
+					'title' 		=> 	'Description',
+					'type' 			=> 	'textarea',
+					'description' 	=> 	'This controls the description which the user sees during checkout.',
+					'default' 		=> 	'your cash, anytime, anywhere'
+				),
 				'paga_epay_code' => array(
-								'title' 		=> 	'Paga Merchant Key',
-								'type' 			=> 	'text',
-								'description' 		=> 	'Enter your Paga merchant key here' ,
-								'default' 		=> 	'',
-                    						'desc_tip'     		=> 	false
-							),
+					'title' 		=> 	'Paga Merchant Key',
+					'type' 			=> 	'text',
+					'description' 	=> 	'Enter your Paga merchant key here' ,
+					'default' 		=> 	'',
+        			'desc_tip'     		=> 	false
+				),
 				'return_url' => array(
-								'title' 		=> 	'Return URL',
-								'type' 			=> 	'text',
-								'description' 		=> 	'This URL should be copied and put in the Payment notification URL field under the Merchant Information section in the E-Pay Set-up area under your Paga Merchant account.',
-                    						'desc_tip'      	=> 	false,
-                    						'disabled'		=>  true,
-								'css' 			=> 'min-width: 550px !important; color: #000; background: #fff',
-								'default' 		=>  WC()->api_request_url( 'WC_Tbz_Paga_Gateway' )
-							),
+					'title' 		=> 	'Return URL',
+					'type' 			=> 	'text',
+					'description' 	=> 	'This URL should be copied and put in the Payment notification URL field under the Merchant Information section in the E-Pay Set-up area under your Paga Merchant account.',
+					'desc_tip'      => 	false,
+					'disabled'		=>  true,
+					'css' 			=> 'min-width: 550px !important; color: #000; background: #fff; color: red',
+					'default' 		=>  WC()->api_request_url( 'WC_Tbz_Paga_Gateway' )
+				),
 				'testing' => array(
-								'title'       	=> 'Gateway Testing',
-								'type'        	=> 'title',
-								'description' 	=> '',
-							),
+					'title'       	=> 'Gateway Testing',
+					'type'        	=> 'title',
+					'description' 	=> '',
+				),
 				'testmode' => array(
-							'title'       		=> 'Test Mode',
-							'type'        		=> 'checkbox',
-							'label'       		=> 'Enable Test Mode',
-							'default'     		=> 'no',
-							'description' 		=> 'Test mode enables you to test payments before going live. <br />If you ready to start receving payment on your site, kindly uncheck this.',
+					'title'       		=> 'Test Mode',
+					'type'        		=> 'checkbox',
+					'label'       		=> 'Enable Test Mode',
+					'default'     		=> 'no',
+					'description' 		=> 'Test mode enables you to test payments before going live. <br />If you ready to start receving payment on your site, kindly uncheck this.',
 				)
 			);
 		}
@@ -128,7 +127,7 @@ function woocommerce_paga_init() {
 
 
 		/**
-		 * Get Paga Args for passing to Paga
+		 * Get payment args for passing to paga
 		**/
 		function get_paga_args( $order ) {
 			global $woocommerce;
@@ -138,6 +137,8 @@ function woocommerce_paga_init() {
 			$order_total		= $order->get_total();
 			$description       	= "Payment for Order ID: $order_id on ". get_bloginfo('name');
 			$return_url 		= WC()->api_request_url( 'WC_Tbz_Paga_Gateway' );
+			$email  			= $order->billing_email;
+			$phone_number		= $order->billing_phone;
 
 			if ( 'yes' == $this->testmode ) {
         		$test = "true";
@@ -147,10 +148,11 @@ function woocommerce_paga_init() {
 
 			// paga Args
 			$paga_args = array(
-				'description'			=> $description,
+				'description'		=> $description,
 				'subtotal' 			=> $order_total,
 				'invoice'			=> $order_id,
-				'return_url'			=> $return_url,
+				'email'				=> $email,
+				'return_url'		=> $return_url,
 				'test' 				=> $test
 			);
 
@@ -181,7 +183,7 @@ function woocommerce_paga_init() {
 					' . implode('', $paga_args_array) . '
 				</form>
 					<!-- begin Paga ePay widget code -->
-					<script type="text/javascript" src="https://www.mypaga.com/paga-web/epay/ePay-button.paga?k='.$paga_epay_code.'&e=false"> </script>
+					<script type="text/javascript" src="https://www.mypaga.com/paga-web/epay/ePay-start.paga?k='.$paga_epay_code.'&e=false&layout=H"> </script>
 					<!-- end Paga ePay widget code -->
 					<a class="button cancel" href="'.esc_url( $order->get_cancel_order_url() ).'">'.__('Cancel order &amp; restore cart', 'woocommerce').'</a>'
 				;
@@ -207,7 +209,7 @@ function woocommerce_paga_init() {
 	     * Output for the order received page.
 	    **/
 		function receipt_page( $order ) {
-			echo '<p>'.__('Thank you for your order, please click the button below to make payment.', 'woocommerce').'</p>';
+			echo '<p>'.__('Thank you for your order, please click the payment method you want to use below to make payment.', 'woocommerce').'</p>';
 			echo $this->generate_paga_form( $order );
 		}
 
@@ -219,73 +221,53 @@ function woocommerce_paga_init() {
 
 			global $woocommerce;
 
-			if(isset($_POST['status']))
-			{
-				$transaction_status = $_POST['status'];
+            if( $_POST['merchant_key'] == $this->paga_epay_code ){
 
-				switch ($transaction_status) {
-					case 'SUCCESS':
-						$message = 'Payment Transaction was Successfull';
-						break;
-					case 'ERROR_TIMEOUT':
-						$message = 'Payment Transaction Timeout. Try again later.';
-						break;
-					case 'ERROR_INSUFFICIENT_BALANCE':
-						$message = 'Insuccient balance in your account';
-						break;
-					case 'ERROR_INVALID_CUSTOMER_ACCOUNT':
-						$message = 'Invalid Customer Account';
-						break;
-					case 'ERROR_CANCELLED':
-						$message = 'Transaction was cancelled.';
-						break;
-					case 'ERROR_BELOW_MINIMUM':
-						$message = 'The order amount is below the minimum allowed. <br />Contact the merchant.';
-						break;
-					case 'ERROR_ABOVE_MAXINUM':
-						$message = 'The order amount is above the maximum allowed. <br />Contact the merchant.';
-						break;
-					case 'ERROR_AUTHENTICATION':
-						$message= 'Invalid Login Details';
-						break;
-					case 'ERROR_UNKNOWN':
-						$message = 'Transaction Failed. Kindly Try again';
-						break;
+				$transaction_id = $_POST['transaction_id'];
+				$order_id 		= $_POST['invoice'];
+				$order_id 		= (int) $order_id;
 
-					default:
-						$message = 'Transaction Failed. Kindly Try again';
-						break;
-				}
+                $order 			= new WC_Order($order_id);
 
-				if($transaction_status == 'SUCCESS')
+		        $order_total	= $order->get_total();
+
+				$amount_paid 	= $_POST['amount'];
+
+	            //after payment hook
+                do_action('tbz_paga_woo_after_payment', $_POST, $order );
+
+				// check if the amount paid is equal to the order amount.
+				if( $order_total != $amount_paid )
 				{
-					$transaction_id = $_POST['transaction_id'];
-					$order_id 	= $_POST['invoice'];
-					$order_id 	= (int) $order_id;
 
-	                		$order 		= new WC_Order($order_id);
-	
-			        	$order_total	= $order->get_total();
+	                //Update the order status
+					$order->update_status('on-hold', '');
 
-					$amount_paid 	= $_POST['total'];
+					//Error Note
+					$message = 'Thank you for shopping with us.<br />Your payment transaction was successful, but the amount paid is not the same as the total order amount.<br />Your order is currently on-hold.<br />Kindly contact us for more information regarding your order and payment status.';
+					$message_type = 'notice';
 
-					// check if the amount paid is equal to the order amount.
-					if($order_total != $amount_paid)
-					{
-			            //after payment hook
-		                do_action('tbz_paga_woo_after_payment', $transaction);
+					//Add Customer Order Note
+                    $order->add_order_note( $message.'<br />Paga Transaction ID: '.$transaction_id, 1 );
 
-		                //Update the order status
-						$order->update_status('on-hold', '');
+                    //Add Admin Order Note
+                    $order->add_order_note( 'This order is currently on hold.<br />Reason: Amount paid is less than the total order amount.<br />Amount Paid was: &#8358; '.$amount_paid.' while the total order amount is: &#8358; '.$order_total.'<br />Paga Transaction ID: '.$transaction_id );
 
-						//Error Note
-						$message = 'Thank you for shopping with us.<br />Your payment transaction was successful, but the amount paid is not the same as the total order amount.<br />Your order is currently on-hold.<br />Kindly contact us for more information regarding your order and payment status.';
+					// Reduce stock levels
+					$order->reduce_order_stock();
 
-						//Add Customer Order Note
-	                    $order->add_order_note($message.'<br />Paga Transaction ID: '.$transaction_id, 1);
+					// Empty cart
+					WC()->cart->empty_cart();
+				}
+				else
+				{
+	                if($order->status == 'processing')
+	                {
 
-	                    //Add Admin Order Note
-	                    $order->add_order_note('This order is currently on hold.<br />Reason: Amount paid is less than the total order amount.<br />Amount Paid was: &#8358; '.$amount.' while the total order amount is: &#8358; '.$posted_amount.'<br />Paga Transaction ID: '.$transaction_id);
+	                    $order->add_order_note('Payment Via Paga<br />Transaction ID: '.$transaction_id);
+
+	                    //Add customer order note
+	 					$order->add_order_note("Payment Received.<br />Your order is currently being processed.<br />We will be shipping your order to you soon.< br />Paga Transaction ID: '.$transaction_id", 1);
 
 						// Reduce stock levels
 						$order->reduce_order_stock();
@@ -293,25 +275,21 @@ function woocommerce_paga_init() {
 						// Empty cart
 						WC()->cart->empty_cart();
 
-						if ( function_exists( 'wc_add_notice' ) ) {
-							wc_add_notice( $message, 'error' );
+						//Transaction Status Message
+						$message = 'Thank you for shopping with us.<br />Your transaction was successful, payment was received.<br />Your order is currently being processed.';
+						$message_type = 'success';
+	                }
+	                else
+	                {
 
-						} else { // WC < 2.1
-							$woocommerce->add_error( $message );
-							$woocommerce->set_messages();
-						}
-					}
-					else
-					{
-		                if($order->status == 'processing')
-		                {
-				            //after payment hook
-			                do_action('tbz_paga_woo_after_payment', $transaction);
+	                	if( $order->has_downloadable_item() ){
 
-		                    $order->add_order_note('Payment Via Paga<br />Transaction ID: '.$transaction_id);
+							$order->update_status( 'completed', 'Payment received, your order is now complete.' );
+
+		                    $order->add_order_note( 'Payment Via Paga<br />Transaction ID: '.$transaction_id );
 
 		                    //Add customer order note
-		 					$order->add_order_note("Payment Received.<br />Your order is currently being processed.<br />We will be shipping your order to you soon.< br />Paga Transaction ID: '.$transaction_id", 1);
+		 					$order->add_order_note( "Payment Received.<br />Your order is now complete.<br />We will be shipping your order to you soon.", 1 );
 
 							// Reduce stock levels
 							$order->reduce_order_stock();
@@ -320,112 +298,256 @@ function woocommerce_paga_init() {
 							WC()->cart->empty_cart();
 
 							//Transaction Status Message
-							$status_message = 'Thank you for shopping with us.<br />'.$message.'<br />Your order is currently being processed.';
+							$message = 'Thank you for shopping with us.<br />Your transaction was successful, payment was received.<br />Your order is now complete.';
+							$message_type = 'success';
+						}
 
-							if ( function_exists( 'wc_add_notice' ) ) {
-								wc_add_notice( $status_message, 'success' );
+						else{
 
-							} else { // WC < 2.1
-								$woocommerce->add_message( $status_message );
-								$woocommerce->set_messages();
-							}
-		                }
-		                else
-		                {
+							$order->update_status( 'processing', 'Payment received, your order is currently being processed.' );
 
-		                	if( $order->has_downloadable_item() ){
+		                    $order->add_order_note( 'Payment Via Paga<br />Transaction ID: '.$transaction_id );
 
-					            //after payment hook
-				                do_action('tbz_paga_woo_after_payment', $transaction);
+		                    //Add customer order note
+		 					$order->add_order_note( "Payment Received.<br />Your order is currently being processed.<br />We will be shipping your order to you soon.", 1 );
 
-								$order->update_status('completed', 'Payment received, your order is now complete.');
+							// Reduce stock levels
+							$order->reduce_order_stock();
 
-			                    $order->add_order_note('Payment Via Paga<br />Transaction ID: '.$transaction_id);
+							// Empty cart
+							WC()->cart->empty_cart();
 
-			                    //Add customer order note
-			 					$order->add_order_note("Payment Received.<br />Your order is now complete.<br />We will be shipping your order to you soon.", 1);
+							//Transaction Status Message
+							$message = 'Thank you for shopping with us.<br />Your transaction was successful, payment was received.<br />Your order is currently being processed.';
+							$message_type = 'success';
+						}
 
-								// Reduce stock levels
-								$order->reduce_order_stock();
-
-								// Empty cart
-								WC()->cart->empty_cart();
-
-								//Transaction Status Message
-								$status_message = 'Thank you for shopping with us.<br />'.$message.'<br />Your order is now complete.';
-
-								if ( function_exists( 'wc_add_notice' ) ) {
-									wc_add_notice( $status_message, 'success' );
-
-								} else { // WC < 2.1
-									$woocommerce->add_message( $status_message );
-									$woocommerce->set_messages();
-								}
-							}
-
-							else{
-
-					            //after payment hook
-				                do_action('tbz_paga_woo_after_payment', $transaction);
-
-								$order->update_status('processing', 'Payment received, your order is currently being processed.');
-
-			                    $order->add_order_note('Payment Via Paga<br />Transaction ID: '.$transaction_id);
-
-			                    //Add customer order note
-			 					$order->add_order_note("Payment Received.<br />Your order is currently being processed.<br />We will be shipping your order to you soon.", 1);
-
-								// Reduce stock levels
-								$order->reduce_order_stock();
-
-								// Empty cart
-								WC()->cart->empty_cart();
-
-								//Transaction Status Message
-								$status_message = 'Thank you for shopping with us.<br />'.$message.'<br />Your order is currently being processed.';
-
-								if ( function_exists( 'wc_add_notice' ) ) {
-									wc_add_notice( $status_message, 'success' );
-
-								} else { // WC < 2.1
-									$woocommerce->add_message( $status_message );
-									$woocommerce->set_messages();
-								}
-							}
-
-		                }
 	                }
+                }
+
+                $paga_message = array(
+                	'message'		=> $message,
+                	'message_type' 	=> $message_type
+                );
+
+				if ( version_compare( WOOCOMMERCE_VERSION, "2.2" ) >= 0 ) {
+					add_post_meta( $order_id, '_transaction_id', $transaction_id, true );
 				}
 
-	            else
-	            {
-					$status_message =  'Thank you for shopping with us. <br />'.$message;
+				update_post_meta( $order_id, '_tbz_paga_message', $paga_message );
 
-					if ( function_exists( 'wc_add_notice' ) ) {
-						wc_add_notice( $status_message, 'error' );
+                die( 'IPN Processed OK. Payment Successfully' );
+            }
 
-					} else { // WC < 2.1
-						$woocommerce->add_error( $status_message );
-						$woocommerce->set_messages();
+            else{
+
+				if( isset( $_POST['status'] ) )
+				{
+
+					$transaction_status = $_POST['status'];
+					$transaction_id 	= $_POST['transaction_id'];
+					$order_id 			= $_POST['invoice'];
+					$order_id 			= (int) $order_id;
+
+			        $order 				= new WC_Order($order_id);
+
+					$paga_message 		= get_post_meta( $order_id, '_tbz_paga_message', true );
+
+					if( ! empty( $paga_message) ){
+
+						$message 		= $paga_message['message'];
+						$message_type 	= $paga_message['message_type'];
+						delete_post_meta( $order_id, '_tbz_paga_message' );
+						wc_add_notice( $message, $message_type );
+
+		            	$redirect_url 	= esc_url( $this->get_return_url( $order ) );
+			            wp_redirect( $redirect_url );
+			            exit;
 					}
-	            }
-			}
-			else
-			{
-				$status_message =  'Thank you for shopping with us. <br />However, the transaction wasn\'t successful, payment wasn\'t recieved.';
 
-				if ( function_exists( 'wc_add_notice' ) ) {
-					wc_add_notice( $status_message, 'error' );
+					else{
 
-				} else { // WC < 2.1
-					$woocommerce->add_error( $status_message );
-					$woocommerce->set_messages();
+						$transaction_message = $this->get_transaction_message( $transaction_status );
+
+						if( $transaction_status == 'SUCCESS' )
+						{
+
+					        $order_total	= $order->get_total();
+
+							$amount_paid 	= $_POST['total'];
+
+				            //after payment hook
+			                do_action('tbz_paga_woo_after_payment', $_POST, $order );
+
+							// check if the amount paid is equal to the order amount.
+							if( $order_total != $amount_paid )
+							{
+
+				                //Update the order status
+								$order->update_status('on-hold', '');
+
+								//Error Note
+								$message = 'Thank you for shopping with us.<br />Your payment transaction was successful, but the amount paid is not the same as the total order amount.<br />Your order is currently on-hold.<br />Kindly contact us for more information regarding your order and payment status.';
+								$message_type = 'notice';
+
+								//Add Customer Order Note
+			                    $order->add_order_note( $message.'<br />Paga Transaction ID: '.$transaction_id, 1 );
+
+			                    //Add Admin Order Note
+			                    $order->add_order_note( 'This order is currently on hold.<br />Reason: Amount paid is less than the total order amount.<br />Amount Paid was: &#8358; '.$amount_paid.' while the total order amount is: &#8358; '.$order_total.'<br />Paga Transaction ID: '.$transaction_id );
+
+								// Reduce stock levels
+								$order->reduce_order_stock();
+
+								// Empty cart
+								WC()->cart->empty_cart();
+							}
+							else
+							{
+				                if($order->status == 'processing')
+				                {
+
+				                    $order->add_order_note( 'Payment Via Paga<br />Transaction ID: '.$transaction_id );
+
+				                    //Add customer order note
+				 					$order->add_order_note( "Payment Received.<br />Your order is currently being processed.<br />We will be shipping your order to you soon.< br />Paga Transaction ID: '.$transaction_id", 1) ;
+
+									// Reduce stock levels
+									$order->reduce_order_stock();
+
+									// Empty cart
+									WC()->cart->empty_cart();
+
+									//Transaction Status Message
+									$message = 'Thank you for shopping with us.<br />'.$transaction_message.'<br />Your order is currently being processed.';
+									$message_type = 'success';
+				                }
+				                else
+				                {
+
+				                	if( $order->has_downloadable_item() ){
+
+										$order->update_status( 'completed', 'Payment received, your order is now complete.');
+
+					                    $order->add_order_note( 'Payment Via Paga<br />Transaction ID: '.$transaction_id );
+
+					                    //Add customer order note
+					 					$order->add_order_note( "Payment Received.<br />Your order is now complete.<br />We will be shipping your order to you soon.", 1 );
+
+										// Reduce stock levels
+										$order->reduce_order_stock();
+
+										// Empty cart
+										WC()->cart->empty_cart();
+
+										//Transaction Status Message
+										$message = 'Thank you for shopping with us.<br />'.$transaction_message.'<br />Your order is now complete.';
+										$message_type = 'success';
+									}
+
+									else{
+
+										$order->update_status( 'processing', 'Payment received, your order is currently being processed.' );
+
+					                    $order->add_order_note( 'Payment Via Paga<br />Transaction ID: '.$transaction_id );
+
+					                    //Add customer order note
+					 					$order->add_order_note( "Payment Received.<br />Your order is currently being processed.<br />We will be shipping your order to you soon.", 1 );
+
+										// Reduce stock levels
+										$order->reduce_order_stock();
+
+										// Empty cart
+										WC()->cart->empty_cart();
+
+										//Transaction Status Message
+										$message = 'Thank you for shopping with us.<br />'.$transaction_message.'<br />Your order is currently being processed.';
+										$message_type = 'success';
+									}
+
+				                }
+			                }
+
+							if ( version_compare( WOOCOMMERCE_VERSION, "2.2" ) >= 0 ) {
+								add_post_meta( $order_id, '_transaction_id', $transaction_id, true );
+							}
+						}
+
+			            else
+			            {
+							$message =  'Thank you for shopping with us. <br />However, the transaction wasn\'t successful, payment wasn\'t received.<br />'.$transaction_message;
+							$message_type 	= 'error';
+
+							//Add Customer Order Note
+		                   	$order->add_order_note( $message, 1 );
+
+		                    //Add Admin Order Note
+		                  	$order->add_order_note( $message );
+
+			                //Update the order status
+							$order->update_status('failed', '');
+			            }
+					}
+
+					wc_add_notice( $message, $message_type );
 				}
-			}
+				else
+				{
+					$message =  'Thank you for shopping with us. <br />However, the transaction wasn\'t successful, payment wasn\'t recieved.';
+					$message_type 	= 'error';
+					wc_add_notice( $message, $message_type );
 
-            $redirect_url = get_permalink( wc_get_page_id('myaccount') );
-            wp_redirect( $redirect_url );
-            exit;
+					$redirect_url = get_permalink( wc_get_page_id('myaccount') );
+		            wp_redirect( $redirect_url );
+		            exit;
+				}
+
+            	$redirect_url = esc_url( $this->get_return_url( $order ) );
+	            wp_redirect( $redirect_url );
+	            exit;
+            }
+		}
+
+
+		/**
+	 	* Get Payment Transaction Status
+	 	**/
+		function get_transaction_message( $transaction_status ){
+
+			switch ($transaction_status) {
+				case 'SUCCESS':
+					$message = 'Payment Transaction was Successfull';
+					break;
+				case 'ERROR_TIMEOUT':
+					$message = 'Payment Transaction Timeout. Try again later.';
+					break;
+				case 'ERROR_INSUFFICIENT_BALANCE':
+					$message = 'Insuccient balance in your account';
+					break;
+				case 'ERROR_INVALID_CUSTOMER_ACCOUNT':
+					$message = 'Invalid Customer Account';
+					break;
+				case 'ERROR_CANCELLED':
+					$message = 'Transaction was cancelled.';
+					break;
+				case 'ERROR_BELOW_MINIMUM':
+					$message = 'The order amount is below the minimum allowed. <br />Contact the merchant.';
+					break;
+				case 'ERROR_ABOVE_MAXINUM':
+					$message = 'The order amount is above the maximum allowed. <br />Contact the merchant.';
+					break;
+				case 'ERROR_AUTHENTICATION':
+					$message= 'Invalid Login Details';
+					break;
+				case 'ERROR_UNKNOWN':
+					$message = 'Transaction Failed. Kindly Try again';
+					break;
+
+				default:
+					$message = 'Transaction Failed. Kindly Try again';
+					break;
+			}
+            return $message;
 		}
 	}
 
@@ -513,4 +635,25 @@ function woocommerce_paga_init() {
 		    return $links;
 		}
 	}
+
+	/**
+ 	* Display the testmode notice
+ 	**/
+	function tbz_wc_paga_testmode_notice(){
+		$tbz_paga_settings = get_option( 'woocommerce_tbz_paga_gateway_settings' );
+
+		$paga_test_mode = $tbz_paga_settings['testmode'];
+
+		if ( 'yes' == $paga_test_mode ) {
+
+		$settings_link = get_bloginfo('wpurl') . '/wp-admin/admin.php?page=wc-settings&tab=checkout&section=wc_tbz_paga_gateway';
+
+	    ?>
+		    <div class="update-nag">
+		        Paga testmode is still enabled, remember to disable it when you want to start accepting live payment on your site. You can do so <a href="<?php echo $settings_link; ?>">here</a>
+		    </div>
+	    <?php
+		}
+	}
+	add_action( 'admin_notices', 'tbz_wc_paga_testmode_notice' );
 }
