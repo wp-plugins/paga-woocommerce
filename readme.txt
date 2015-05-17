@@ -2,8 +2,8 @@
 Contributors: tubiz, mypaga.com, k_uko
 Tags: woocommerce, payment gateway, payment gateways, paga, interswitch, verve cards, tubiz plugins, verve, nigeria
 Requires at least: 3.5
-Tested up to: 4.1
-Stable tag: 1.1.0
+Tested up to: 4.2
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,9 +104,14 @@ __*You can select the radio button next to the Paga Payment Gateway from the lis
 
 == Changelog ==
 
+= 1.2.0 =
+*	Fix: Use wc_get_order instead or declaring a new WC_Order class
+*	Fix: Removed all global $woocommerce variable
+* 	Add support for Woocommerce 2.3
+
 = 1.1.0 =
 * 	Add support for Woocommerce 2.1
-*	Plugin now uses E-Pay v2
+*	Plugin now uses ePay v2
 
 = 1.0.0 =
 *   First release
@@ -117,8 +122,8 @@ __*You can select the radio button next to the Paga Payment Gateway from the lis
 
 == Upgrade Notice ==
 
-= 1.1.0 =
-* 	Important update, kindly update to this version
+= 1.2.0 =
+* Make plugin compatible with latest WordPress version
 
 
 

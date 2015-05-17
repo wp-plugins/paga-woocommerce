@@ -3,7 +3,7 @@
 	Plugin Name: Paga Woocommerce E-Pay
 	Plugin URI: https://www.mypaga.com/
 	Description: Paga E-Pay Plugin for Woocommerce
-	Version: 1.1.0
+	Version: 1.2.0
 	Author: Pagatech Limited
 	Author URI: https://www.mypaga.com/
 	License:  GPL-2.0+
@@ -13,11 +13,11 @@
 if ( ! defined( 'ABSPATH' ) )
 	exit;
 
-add_action('plugins_loaded', 'woocommerce_paga_init', 0);
+add_action('plugins_loaded', 'tbz_wc_paga_init', 0);
 
-function woocommerce_paga_init() {
+function tbz_wc_paga_init() {
 
-	if ( !class_exists( 'WC_Payment_Gateway' ) ) return;
+	if ( ! class_exists( 'WC_Payment_Gateway' ) ) return;
 
 	/**
  	 * Gateway class
@@ -25,7 +25,6 @@ function woocommerce_paga_init() {
 	class WC_Tbz_Paga_Gateway extends WC_Payment_Gateway {
 
 		public function __construct(){
-			global $woocommerce;
 
 			$this->id 					= 'tbz_paga_gateway';
     		$this->icon 				= apply_filters('woocommerce_paga_icon', plugins_url( 'assets/pay-with-paga.png' , __FILE__ ) );
@@ -130,7 +129,6 @@ function woocommerce_paga_init() {
 		 * Get payment args for passing to paga
 		**/
 		function get_paga_args( $order ) {
-			global $woocommerce;
 
 			$order_id 			= $order->id;
 
@@ -165,9 +163,8 @@ function woocommerce_paga_init() {
 		 * Generate the Paga Payment button link
 	    **/
 	    function generate_paga_form( $order_id ) {
-			global $woocommerce;
 
-			$order = new WC_Order( $order_id );
+			$order = wc_get_order( $order_id );
 
 			$paga_args = $this->get_paga_args( $order );
 
@@ -196,7 +193,8 @@ function woocommerce_paga_init() {
 	    **/
 		function process_payment( $order_id ) {
 
-			$order = new WC_Order( $order_id );
+			$order = wc_get_order( $order_id );
+
 	        return array(
 	        	'result' 	=> 'success',
 				'redirect'	=> $order->get_checkout_payment_url( true )
@@ -209,7 +207,7 @@ function woocommerce_paga_init() {
 	     * Output for the order received page.
 	    **/
 		function receipt_page( $order ) {
-			echo '<p>'.__('Thank you for your order, please click the payment method you want to use below to make payment.', 'woocommerce').'</p>';
+			echo '<p>Thank you for your order, please click the payment method you want to use below to make payment.</p>';
 			echo $this->generate_paga_form( $order );
 		}
 
@@ -219,15 +217,13 @@ function woocommerce_paga_init() {
 		**/
 		function check_paga_response( $posted ){
 
-			global $woocommerce;
-
-            if( $_POST['merchant_key'] == $this->paga_epay_code ){
+            if( $_POST['merchant_key'] == $this->paga_epay_code ) {
 
 				$transaction_id = $_POST['transaction_id'];
 				$order_id 		= $_POST['invoice'];
 				$order_id 		= (int) $order_id;
 
-                $order 			= new WC_Order($order_id);
+                $order 			= wc_get_order($order_id);
 
 		        $order_total	= $order->get_total();
 
@@ -237,8 +233,7 @@ function woocommerce_paga_init() {
                 do_action('tbz_paga_woo_after_payment', $_POST, $order );
 
 				// check if the amount paid is equal to the order amount.
-				if( $order_total != $amount_paid )
-				{
+				if( $order_total != $amount_paid ) {
 
 	                //Update the order status
 					$order->update_status('on-hold', '');
@@ -259,10 +254,9 @@ function woocommerce_paga_init() {
 					// Empty cart
 					WC()->cart->empty_cart();
 				}
-				else
-				{
-	                if($order->status == 'processing')
-	                {
+				else {
+
+	                if($order->status == 'processing') {
 
 	                    $order->add_order_note('Payment Via Paga<br />Transaction ID: '.$transaction_id);
 
@@ -279,10 +273,9 @@ function woocommerce_paga_init() {
 						$message = 'Thank you for shopping with us.<br />Your transaction was successful, payment was received.<br />Your order is currently being processed.';
 						$message_type = 'success';
 	                }
-	                else
-	                {
+	                else {
 
-	                	if( $order->has_downloadable_item() ){
+	                	if( $order->has_downloadable_item() ) {
 
 							$order->update_status( 'completed', 'Payment received, your order is now complete.' );
 
@@ -302,7 +295,7 @@ function woocommerce_paga_init() {
 							$message_type = 'success';
 						}
 
-						else{
+						else {
 
 							$order->update_status( 'processing', 'Payment received, your order is currently being processed.' );
 
@@ -341,19 +334,18 @@ function woocommerce_paga_init() {
 
             else{
 
-				if( isset( $_POST['status'] ) )
-				{
+				if( isset( $_POST['status'] ) ) {
 
 					$transaction_status = $_POST['status'];
 					$transaction_id 	= $_POST['transaction_id'];
 					$order_id 			= $_POST['invoice'];
 					$order_id 			= (int) $order_id;
 
-			        $order 				= new WC_Order($order_id);
+			        $order 				= wc_get_order($order_id);
 
 					$paga_message 		= get_post_meta( $order_id, '_tbz_paga_message', true );
 
-					if( ! empty( $paga_message) ){
+					if( ! empty( $paga_message) ) {
 
 						$message 		= $paga_message['message'];
 						$message_type 	= $paga_message['message_type'];
@@ -365,12 +357,11 @@ function woocommerce_paga_init() {
 			            exit;
 					}
 
-					else{
+					else {
 
 						$transaction_message = $this->get_transaction_message( $transaction_status );
 
-						if( $transaction_status == 'SUCCESS' )
-						{
+						if( $transaction_status == 'SUCCESS' ) {
 
 					        $order_total	= $order->get_total();
 
@@ -402,10 +393,9 @@ function woocommerce_paga_init() {
 								// Empty cart
 								WC()->cart->empty_cart();
 							}
-							else
-							{
-				                if($order->status == 'processing')
-				                {
+							else {
+
+				                if($order->status == 'processing') {
 
 				                    $order->add_order_note( 'Payment Via Paga<br />Transaction ID: '.$transaction_id );
 
@@ -422,10 +412,9 @@ function woocommerce_paga_init() {
 									$message = 'Thank you for shopping with us.<br />'.$transaction_message.'<br />Your order is currently being processed.';
 									$message_type = 'success';
 				                }
-				                else
-				                {
+				                else {
 
-				                	if( $order->has_downloadable_item() ){
+				                	if( $order->has_downloadable_item() ) {
 
 										$order->update_status( 'completed', 'Payment received, your order is now complete.');
 
@@ -445,7 +434,7 @@ function woocommerce_paga_init() {
 										$message_type = 'success';
 									}
 
-									else{
+									else {
 
 										$order->update_status( 'processing', 'Payment received, your order is currently being processed.' );
 
@@ -473,8 +462,8 @@ function woocommerce_paga_init() {
 							}
 						}
 
-			            else
-			            {
+			            else {
+
 							$message =  'Thank you for shopping with us. <br />However, the transaction wasn\'t successful, payment wasn\'t received.<br />'.$transaction_message;
 							$message_type 	= 'error';
 
@@ -491,8 +480,8 @@ function woocommerce_paga_init() {
 
 					wc_add_notice( $message, $message_type );
 				}
-				else
-				{
+				else {
+
 					$message =  'Thank you for shopping with us. <br />However, the transaction wasn\'t successful, payment wasn\'t recieved.';
 					$message_type 	= 'error';
 					wc_add_notice( $message, $message_type );
@@ -554,11 +543,11 @@ function woocommerce_paga_init() {
 	/**
  	* Add the Gateway to WooCommerce
  	**/
-	function woocommerce_add_paga_gateway($methods) {
+	function tbz_wc_add_paga_gateway($methods) {
 		$methods[] = 'WC_Tbz_Paga_Gateway';
 		return $methods;
 	}
-	add_filter('woocommerce_payment_gateways', 'woocommerce_add_paga_gateway' );
+	add_filter('woocommerce_payment_gateways', 'tbz_wc_add_paga_gateway' );
 
 
 	/**
