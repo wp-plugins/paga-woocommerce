@@ -2,7 +2,7 @@
 Contributors: tubiz, mypaga.com, k_uko
 Tags: woocommerce, payment gateway, payment gateways, paga, interswitch, verve cards, tubiz plugins, verve, nigeria
 Requires at least: 3.5
-Tested up to: 4.2
+Tested up to: 4.3
 Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
